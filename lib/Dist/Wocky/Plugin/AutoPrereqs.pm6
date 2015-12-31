@@ -7,11 +7,15 @@ unit class Dist::Wocky::Plugin::AutoPrereqs does Dist::Wocky::Action::PrereqProv
 has @.skip;
 
 submethod BUILD (:$skip?) {
-    dd $skip;
     return unless $skip;
-    my @skip = $skip ~~ Positional ?? $skip.flat !! ($skip);
-    @!skip = @skip.map( { / ^ <[ \w : ]>+ $ / ?? $_ !! / ^ "$_" $ / } );
-    dd @!skip;
+    @!skip =
+        ( $skip ~~ Positional ?? $skip !! ($skip) ).map(
+        {
+            / ^ <[ \w : ]>+ $ /
+            ?? $_
+            !! rx{ <$_> }
+        }
+    );
 }
 
 method provide-prereqs returns Hash {

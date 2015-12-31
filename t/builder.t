@@ -23,6 +23,19 @@ for <Dist::Wocky::Plugin::AutoPrereqs Dist::Wocky::Plugin::MetaInfo> -> $p {
 }
 
 my $auto-prereqs = @plugins.first( { $_.isa('Dist::Wocky::Plugin::AutoPrereqs') } );
-for ( / ^ 'Foo' /, / ^ 'Bad::Module' $/ ) -> $re {
-    is( $auto-prereqs.skip.one, $re, "auto-prereqs will skip {$re.perl}" );
+for <Foo::Bar Foo Foodie Bad::Module> -> $m {
+    cmp-ok(
+        $m,
+        '~~',
+        any( $auto-prereqs.skip ),
+        "AutoPrereqs would skip $m"
+    );
+}
+for <NotFoo Badder::Module> -> $m {
+    cmp-ok(
+        $m,
+        '!~~',
+        any( $auto-prereqs.skip ),
+        "AutoPrereqs would not skip $m"
+    );
 }
