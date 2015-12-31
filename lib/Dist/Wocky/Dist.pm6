@@ -5,7 +5,7 @@ unit role Dist::Wocky::Dist;
 use Dist::Wocky::Logger;
 use Dist::Wocky::Plugin;
 
-use Config::INI;
+use Config::MVP;
 
 # These are expected to come from config:
 has Str $.name;
@@ -21,7 +21,7 @@ has Dist::Wocky::Plugin @!plugins;
 has IO::Path @!files;
 
 method new-from-config-file ($class: Str(Any) $file) {
-    my %config = Config::INI::parse_file($file);
+    my %config = Config::MVP::parse-file($file);
 
     my %args;
     for %config<_>.keys -> $k {
